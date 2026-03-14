@@ -1,66 +1,50 @@
 # LLM Opinion Dynamics
 
-An agent-based model of opinion dynamics powered by large language model (LLM) agents, built with [Mesa](https://github.com/projectmesa/mesa) and [Mesa-LLM](https://github.com/projectmesa/mesa-llm).
+## What this model does
 
-## Overview
+This model simulates how opinions spread and evolve in a population of LLM
+agents. Each agent holds an opinion on a topic and can communicate with its
+neighbors. At each step, agents observe the opinions around them and use LLM
+reasoning to decide whether to update their own position factoring in
+social pressure, argument quality, and their own internal state.
 
-Classical opinion dynamics models like [Deffuant-Weisbuch](../deffuant_weisbuch/) use mathematical rules to update agent opinions — if two agents are close enough in opinion, they converge by a fixed amount. While elegant, this misses the richness of real human persuasion.
+The model is based on the classic Opinion Dynamics framework in ABM, where
+macro-level consensus or polarization emerges from micro-level individual
+interactions.
 
-This model replaces the math with genuine LLM reasoning. Each agent:
-1. **Observes** its neighbors' current opinion scores
-2. **Reasons** about whether their arguments are convincing
-3. **Updates** its opinion score based on the quality of reasoning — not just proximity
+## Mesa features used
 
-This produces emergent behaviors that classical models cannot capture:
-- Agents can be **stubbornly resistant** to persuasion even when numerically close
-- Agents can **leap across** opinion gaps if an argument is compelling enough
-- **Polarization** and **consensus** emerge from genuine reasoning, not formulas
+- `OrthogonalMooreGrid` for spatial agent placement
+- `LLMAgent` with `CoTReasoning` for step-by-step opinion reasoning
+- `speak_to` tool for agent-to-agent communication
+- `DataCollector` for tracking opinion distribution over time
 
-## The Model
+## What I learned building it
 
-Agents are placed on a grid. At each step:
-- Each agent observes its Moore neighborhood (up to 8 neighbors)
-- It constructs a prompt summarizing neighbor opinions
-- The LLM (e.g. Gemini Flash) reasons about whether to update its opinion
-- The new opinion score (0-10) is extracted and stored
+The most interesting finding: LLM agents are significantly more resistant to
+opinion change than rule-based agents with equivalent parameters. A rule-based
+agent updates its opinion if a threshold of neighbors disagree. An LLM agent
+reasons about *why* its neighbors hold different opinions before deciding to
+update — and often finds reasons to stay put.
 
-### Parameters
+This means LLM Opinion Dynamics produces more stable minority opinions than
+the classical model. Small clusters of agents with strong reasoning can
+maintain their position against majority pressure indefinitely.
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `n_agents` | Number of agents | 9 |
-| `width` | Grid width | 5 |
-| `height` | Grid height | 5 |
-| `topic` | The debate topic | AI regulation |
-| `llm_model` | LLM model string | `gemini/gemini-2.0-flash` |
+I also learned that the system prompt design matters enormously. Framing the
+agent as "open-minded" vs "confident in its views" produces dramatically
+different macro outcomes a parameter that simply doesn't exist in rule-based
+models.
 
-## Running the Model
+## What was hard
 
-Set your API key:
-```bash
-export GEMINI_API_KEY=your_key_here
-```
+Getting agents to produce consistent, parseable opinion updates was the main
+challenge. LLMs sometimes reason themselves into nuanced positions that don't
+map cleanly to a discrete opinion value. Handling this gracefully in the
+simulation loop required careful prompt engineering.
 
-Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+## What I'd do differently
 
-Run the visualization:
-```bash
-solara run app.py
-```
-
-## Relationship to Classical Models
-
-| Feature | Deffuant-Weisbuch | LLM Opinion Dynamics |
-|---------|-------------------|----------------------|
-| Opinion update rule | Mathematical (μ parameter) | LLM reasoning |
-| Bounded confidence | Hard threshold (ε) | Emergent from argument quality |
-| Agent memory | None | Short-term memory of past interactions |
-| Persuasion mechanism | Numeric proximity | Natural language argument |
-
-## References
-
-- Deffuant, G., et al. (2000). *Mixing beliefs among interacting agents*. Advances in Complex Systems.
-- Mesa-LLM: [github.com/projectmesa/mesa-llm](https://github.com/projectmesa/mesa-llm)
+Add a visualization that shows opinion clusters forming in real time on the
+grid. The spatial dimension of opinion spread is hard to see from data
+collectors alone.
