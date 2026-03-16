@@ -1,50 +1,53 @@
-# LLM Epidemic Model
+# LLM Epidemic (SIR) Model
 
-## Summary
+## What this model does
 
-A classic SIR (Susceptible-Infected-Recovered) epidemic simulation where agents use **LLM Chain-of-Thought reasoning** to decide their behavior during an outbreak.
+This model simulates disease spread through a population of LLM agents using
+the classic SIR (Susceptible-Infected-Recovered) framework. Unlike rule-based
+SIR models where infection probability is a fixed parameter, agents here
+reason about their situation at each step deciding whether to isolate,
+continue normal movement, or interact with others based on their health state
+and knowledge of the outbreak.
 
-Unlike traditional SIR models with fixed stochastic transition probabilities, agents here _reason_ about their situation — weighing personal health risk, observed neighbor states, and community responsibility — before choosing an action:
+Agents can be in one of three states: Susceptible, Infected, or Recovered.
+Infected agents know their status and reason about whether to self-isolate.
+Susceptible agents assess their risk based on neighbor states and decide how
+cautiously to behave.
 
-- **isolate** — Stay home, reduce infection risk
-- **move_freely** — Normal activity, higher transmission risk
-- **seek_treatment** — If infected, accelerate recovery
+## Mesa features used
 
-This produces epidemic curves that reflect _reasoning-driven behavioral responses_ rather than purely stochastic transitions, demonstrating how LLM-powered agents can model nuanced human decision-making during crises.
+- `OrthogonalMooreGrid` for spatial population layout
+- `LLMAgent` with `CoTReasoning` for multi-step health decision reasoning
+- `internal_state` for tracking agent health status
+- `move_one_step` tool for agent movement
+- `DataCollector` for SIR curve tracking over time
 
-## Visualization
+## What I learned building it
 
-| Color | State |
-|-------|-------|
-| 🔵 Blue | Susceptible |
-| 🔴 Red | Infected |
-| 🟢 Green | Recovered |
+The most striking result: LLM agents produce slower, flatter epidemic curves
+than rule-based agents with equivalent transmission parameters. The reason is
+behavioral heterogeneity some agents take the outbreak seriously and isolate
+immediately, others rationalize continued normal behavior. This mirrors real
+epidemic dynamics far better than homogeneous rule-based models.
 
-- **Circle (○)** — Agent moving freely
-- **Square (□)** — Agent isolating
+The gap between *knowing* you are infected and *acting* on that knowledge is
+where LLM reasoning becomes genuinely interesting. An agent with high
+"social_value" in its internal state will reason differently about isolation
+than one with high "risk_aversion" producing individual variation in
+compliance that rule-based models can only approximate with population-level
+parameters.
 
-The SIR plot tracks population counts over time, showing how LLM-driven behavioral choices shape the epidemic curve.
+## What was hard
 
-## How to Run
+Calibrating the system prompt so agents behave plausibly was non-trivial.
+Early versions produced agents that always isolated immediately (too
+cautious) or never isolated (ignoring their health state entirely). The
+right balance required iterating on how the observation is presented to
+the agent what information it sees about itself and its neighbors.
 
-```bash
-pip install -r requirements.txt
-solara run app.py
-```
+## What I'd do differently
 
-## Model Parameters
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `num_agents` | 20 | Total agents in simulation |
-| `initial_infected` | 3 | Agents infected at start |
-| `grid_size` | 10 | Size of the spatial grid |
-| `llm_model` | gemini/gemini-2.0-flash | LLM backend for reasoning |
-
-## Key Insight
-
-The epidemic curve shape depends heavily on how agents reason. An LLM that emphasizes community responsibility will produce faster isolation responses and flatter curves, while one that emphasizes personal freedom produces sharper peaks — mirroring real-world behavioral heterogeneity during outbreaks.
-
-## Reference
-
-Kermack, W. O., & McKendrick, A. G. (1927). A contribution to the mathematical theory of epidemics. *Proceedings of the Royal Society of London. Series A*, 115(772), 700–721.
+Add a vaccination mechanic where agents reason about whether to get
+vaccinated based on perceived risk and social norms. This would make the
+model directly comparable to published LLM agent epidemic research and
+more useful as a research starting point.

@@ -1,71 +1,51 @@
 # LLM Schelling Segregation
 
-An LLM-powered implementation of Schelling's (1971) classic segregation model,
-built with [Mesa](https://github.com/projectmesa/mesa) and
-[Mesa-LLM](https://github.com/projectmesa/mesa-llm).
+## What this model does
 
-## Overview
+This model reimplements the classic Schelling Segregation model with LLM
+agents that reason about whether to move rather than applying a fixed
+satisfaction threshold. Each agent observes its neighborhood composition
+and uses LLM reasoning to decide: stay, or move to a random empty cell.
 
-The Schelling segregation model is one of the most influential agent-based
-models ever published. It demonstrates that even mild individual preferences
-for same-group neighbors produce strong global segregation — a striking example
-of emergent behavior from simple rules.
+In the classic model, an agent moves if fewer than X% of its neighbors are
+the same type. In this version, the agent thinks about it considering
+factors like neighborhood quality, attachment to location, and social
+context before deciding.
 
-**Classical model:** An agent moves if fewer than a fixed threshold (e.g. 30%)
-of its neighbors share its group.
+## Mesa features used
 
-**This model:** Agents reason in natural language about their neighborhood
-composition and decide whether they feel comfortable staying or want to move.
-The LLM can weigh contextual factors, producing richer dynamics than a fixed
-threshold allows.
+- `OrthogonalMooreGrid` for the city grid
+- `LLMAgent` with `ReActReasoning` for reasoning-then-acting decisions
+- `move_one_step` and `teleport_to_location` tools for movement
+- `DataCollector` for tracking segregation index over time
 
-## The Model
+## What I learned building it
 
-Agents of two groups (A and B) are placed on a grid. Each step:
-1. Each agent observes its Moore neighborhood (up to 8 neighbors)
-2. It describes the neighborhood composition in natural language to the LLM
-3. The LLM decides: `happy` (stay) or `unhappy` (move)
-4. Unhappy agents relocate to a random empty cell
+The LLM version produces weaker segregation than the rule-based version
+under equivalent conditions. This makes intuitive sense: LLM agents weigh
+multiple factors, not just neighbor composition. An agent might stay in a
+mixed neighborhood because it values stability, even if the classic threshold
+rule would tell it to move.
 
-The simulation tracks happiness levels and a segregation index over time.
+This is actually a more realistic model of human behavior. Real people don't
+move purely based on neighbor ratios they consider moving costs, attachment,
+and uncertainty. LLM agents naturally incorporate this complexity without
+needing explicit parameters for each factor.
 
-### Parameters
+The interesting emergent pattern: LLM agents form smaller, more stable mixed
+clusters rather than the large homogeneous patches the classic model produces.
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `width` | Grid width | 10 |
-| `height` | Grid height | 10 |
-| `density` | Fraction of cells occupied | 0.8 |
-| `minority_fraction` | Fraction of agents in Group B | 0.4 |
-| `llm_model` | LLM model string | `gemini/gemini-2.0-flash` |
+## What was hard
 
-## Running the Model
+The movement logic in `inbuilt_tools.py` had a coordinate system bug I
+discovered while building this model agents were moving in the wrong
+direction on real `OrthogonalMooreGrid` cells. Fixing this required
+understanding how Mesa builds its internal cell graph, which was a deep
+dive into the Mesa 4.x discrete space architecture.
 
-Set your API key:
-```bash
-export GEMINI_API_KEY=your_key_here
-```
+## What I'd do differently
 
-Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-Run the visualization:
-```bash
-solara run app.py
-```
-
-## Comparison with Classical Schelling
-
-| Feature | Classical Schelling | LLM Schelling |
-|---------|--------------------|--------------------|
-| Decision rule | Fixed threshold (e.g. 30%) | LLM natural language reasoning |
-| Agent memory | None | Short-term memory of interactions |
-| Flexibility | Rigid | Emergent from reasoning |
-| Interpretability | Mathematical | Natural language explanations |
-
-## Reference
-
-Schelling, T.C. (1971). Dynamic models of segregation.
-*Journal of Mathematical Sociology*, 1(2), 143–186.
+Add an explicit "attachment" parameter to the agent's internal state that
+influences how reluctant it is to move. This would let researchers study
+how place attachment affects segregation outcomes something the classic
+model can't represent at all.
