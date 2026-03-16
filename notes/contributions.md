@@ -35,7 +35,7 @@
 
 | PR | Repo | Summary |
 |---|---|---|
-| #384 | mesa-examples | Misinformation spread model — reviewed against #390 checklist |
+| #384 | mesa-examples | Misinformation spread model reviewed against #390 checklist |
 
 ## Key Technical Contributions
 
@@ -54,7 +54,7 @@ silent breaking change in Mesa 4.x.
 ### LLM Example Models
 Built 4 LLM example models demonstrating how LLM reasoning changes
 emergent behavior compared to rule-based equivalents:
-- Opinion Dynamics — LLM agents more resistant to opinion change
-- Schelling Segregation — weaker segregation with reasoning agents
-- Epidemic SIR — flatter curves due to behavioral heterogeneity
-- Prisoner's Dilemma — emergent reputation and trust dynamics
+- Opinion Dynamics LLM agents more resistant to opinion change
+- Schelling Segregation weaker segregation with reasoning agents
+- Epidemic SIR flatter curves due to behavioral heterogeneity
+- Prisoner's Dilemma emergent reputation and trust dynamics
