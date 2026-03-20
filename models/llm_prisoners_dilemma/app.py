@@ -39,10 +39,10 @@ def agent_portrayal(agent):
 model_params = {
     "num_agents": {
         "type": "SliderInt",
-        "value": 6,
+        "value": 2,
         "label": "Number of Agents",
         "min": 2,
-        "max": 20,
+        "max": 10,
         "step": 2,
     },
     "llm_model": {
