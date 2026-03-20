@@ -1,4 +1,4 @@
-from mesa import Model
+from mesa import DataCollector, Model
 from mesa_llm.memory.st_memory import ShortTermMemory
 
 from .agent import PrisonerAgent
@@ -42,11 +42,21 @@ class PrisonersDilemmaModel(Model):
         self.total_cooperations = 0
         self.total_defections = 0
 
+        self.datacollector = DataCollector(
+            model_reporters={
+                "cooperation_rate": "cooperation_rate",
+                "total_cooperations": "total_cooperations",
+                "total_defections": "total_defections",
+            }
+        )
+
         # Create agents
         for _ in range(num_agents):
             agent = PrisonerAgent(model=self)
             agent.memory = ShortTermMemory(agent=agent, n=5, display=False)
             agent._update_internal_state()
+
+        self.datacollector.collect(self)
 
     def _pair_agents(self) -> list[tuple]:
         """
@@ -106,3 +116,4 @@ class PrisonersDilemmaModel(Model):
                 round_defections += 1
 
         self._update_stats(round_cooperations, round_defections)
+        self.datacollector.collect(self)

@@ -77,8 +77,10 @@ SIRPlot = make_plot_component(
     }
 )
 
+model = EpidemicModel()
+
 page = SolaraViz(
-    EpidemicModel,
+    model,
     components=[SpaceComponent, SIRPlot],
     model_params=model_params,
     name="LLM Epidemic Model",

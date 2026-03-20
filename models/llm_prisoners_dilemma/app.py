@@ -66,8 +66,10 @@ ScorePlot = make_plot_component(
     }
 )
 
+model = PrisonersDilemmaModel()
+
 page = SolaraViz(
-    PrisonersDilemmaModel,
+    model,
     components=[CoopPlot, ScorePlot],
     model_params=model_params,
     name="LLM Prisoner's Dilemma",
