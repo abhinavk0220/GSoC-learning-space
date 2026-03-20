@@ -9,10 +9,13 @@ if sys.stdout.encoding != "utf-8":
 if sys.stderr.encoding != "utf-8":
     sys.stderr.reconfigure(encoding="utf-8")
 
+import matplotlib.pyplot as plt
 import solara
 from mesa.visualization import SolaraViz, make_plot_component
 
 from llm_prisoners_dilemma.model import PrisonersDilemmaModel
+
+plt.style.use("dark_background")
 
 
 def agent_portrayal(agent):

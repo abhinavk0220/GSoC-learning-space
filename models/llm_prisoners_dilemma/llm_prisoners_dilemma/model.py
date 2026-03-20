@@ -97,9 +97,9 @@ class PrisonersDilemmaModel(Model):
             agent1._update_internal_state()
             agent2._update_internal_state()
 
-            # Both decide independently (no communication during decision)
-            action1 = "cooperate"
-            action2 = "cooperate"
+            # Both decide independently via LLM reasoning
+            action1 = agent1.decide()
+            action2 = agent2.decide()
 
             # Apply outcomes
             agent1.apply_decision(action1, action2)

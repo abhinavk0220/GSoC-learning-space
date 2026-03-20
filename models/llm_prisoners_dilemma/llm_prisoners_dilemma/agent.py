@@ -98,6 +98,28 @@ class PrisonerAgent(LLMAgent):
             return "defect"
         return "cooperate"
 
+    def decide(self) -> str:
+        """
+        Use LLM CoT reasoning to decide whether to cooperate or defect.
+
+        Returns:
+            Either 'cooperate' or 'defect'.
+        """
+        obs = self.generate_obs()
+        step_prompt = (
+            "You are about to play a round of Prisoner's Dilemma. "
+            "Review your history and your partner's behavior. "
+            "Should you cooperate or defect this round? "
+            "Think carefully about trust, reputation, and long-term strategy. "
+            "End your response with your final decision: 'cooperate' or 'defect'."
+        )
+        try:
+            plan = self.reasoning.plan(prompt=step_prompt, obs=obs, selected_tools=[])
+            content = plan.content if hasattr(plan, "content") else str(plan)
+            return self._parse_action(content)
+        except Exception:
+            return "cooperate"
+
     def apply_decision(self, action: str, partner_action: str) -> None:
         """
         Apply the outcome of a round given both agents' actions.
