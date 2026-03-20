@@ -1,7 +1,8 @@
 import os
 import sys
+from pathlib import Path
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(Path(__file__).parent / ".env")
 os.environ["PYTHONIOENCODING"] = "utf-8"
 if sys.stdout.encoding != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")

@@ -52,7 +52,7 @@ class PrisonersDilemmaModel(Model):
 
         # Create agents
         for _ in range(num_agents):
-            agent = PrisonerAgent(model=self)
+            agent = PrisonerAgent(model=self, llm_model=llm_model)
             agent.memory = ShortTermMemory(agent=agent, n=5, display=False)
             agent._update_internal_state()
 

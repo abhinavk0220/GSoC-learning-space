@@ -68,6 +68,7 @@ class LLMSchellingModel(mesa.Model):
                     model=self,
                     reasoning=CoTReasoning,
                     group=group,
+                    llm_model=llm_model,
                 )
                 agent.cell = cell
                 agent.pos = cell.coordinate

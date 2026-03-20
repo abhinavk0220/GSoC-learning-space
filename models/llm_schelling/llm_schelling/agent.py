@@ -16,7 +16,7 @@ class SchellingAgent(LLMAgent):
         is_happy (bool): Whether the agent is satisfied with its location.
     """
 
-    def __init__(self, model, reasoning: type[Reasoning], group: int):
+    def __init__(self, model, reasoning: type[Reasoning], group: int, llm_model: str = "groq/llama-3.1-8b-instant"):
         group_label = "Group A" if group == 0 else "Group B"
         other_label = "Group B" if group == 0 else "Group A"
 
@@ -29,6 +29,7 @@ Respond with ONLY one word: 'happy' if you want to stay, or 'unhappy' if you wan
         super().__init__(
             model=model,
             reasoning=reasoning,
+            llm_model=llm_model,
             system_prompt=system_prompt,
             vision=1,
             internal_state=["group", "is_happy"],
@@ -63,7 +64,7 @@ Your current neighborhood has:
 Do you feel comfortable here, or do you want to move to a different location?
 Respond with ONLY one word: 'happy' or 'unhappy'."""
 
-        plan = self.reasoning.plan(obs, step_prompt=step_prompt)
+        plan = self.reasoning.plan(prompt=step_prompt, obs=obs, selected_tools=[])
 
         # Parse LLM response
         response_text = ""

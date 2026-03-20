@@ -65,7 +65,7 @@ class EpidemicModel(Model):
 
         for i in range(num_agents):
             health_state = "infected" if i < initial_infected else "susceptible"
-            agent = EpidemicAgent(model=self, health_state=health_state)
+            agent = EpidemicAgent(model=self, health_state=health_state, llm_model=llm_model)
             agent.memory = ShortTermMemory(agent=agent, n=5, display=False)
             agent._update_internal_state()
 
