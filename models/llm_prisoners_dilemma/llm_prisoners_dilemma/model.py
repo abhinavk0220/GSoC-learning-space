@@ -32,7 +32,7 @@ class PrisonersDilemmaModel(Model):
     def __init__(
         self,
         num_agents: int = 6,
-        llm_model: str = "gemini/gemini-2.0-flash",
+        llm_model: str = "groq/llama-3.1-8b-instant",
     ) -> None:
         super().__init__()
 

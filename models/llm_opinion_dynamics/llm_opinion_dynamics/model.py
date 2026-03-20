@@ -29,11 +29,11 @@ class LLMOpinionDynamicsModel(mesa.Model):
 
     def __init__(
         self,
-        n_agents: int = 9,
+        n_agents: int = 4,
         width: int = 5,
         height: int = 5,
         topic: str = "Should artificial intelligence be regulated by governments?",
-        llm_model: str = "gemini/gemini-2.0-flash",
+        llm_model: str = "groq/llama-3.1-8b-instant",
         rng=None,
     ):
         super().__init__(rng=rng)
@@ -56,7 +56,7 @@ class LLMOpinionDynamicsModel(mesa.Model):
         self.random.shuffle(cells)
         selected_cells = cells[:n_agents]
 
-        for cell in enumerate(selected_cells):
+        for cell in selected_cells:
             initial_opinion = self.random.uniform(0.0, 10.0)
             agent = OpinionAgent(
                 model=self,
@@ -64,7 +64,8 @@ class LLMOpinionDynamicsModel(mesa.Model):
                 opinion=initial_opinion,
                 topic=topic,
             )
-            agent.cell = cell
+            cell.add_agent(agent)
+            object.__setattr__(agent, "cell", cell)
             agent.pos = cell.coordinate
 
         self.running = True

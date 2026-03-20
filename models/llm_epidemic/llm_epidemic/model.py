@@ -37,7 +37,7 @@ class EpidemicModel(Model):
         num_agents: int = 20,
         initial_infected: int = 3,
         grid_size: int = 10,
-        llm_model: str = "gemini/gemini-2.0-flash",
+        llm_model: str = "groq/llama-3.1-8b-instant",
     ):
         super().__init__()
 

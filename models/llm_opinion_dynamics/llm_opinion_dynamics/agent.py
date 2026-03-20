@@ -12,7 +12,7 @@ class OpinionAgent(LLMAgent):
         topic (str): The topic being debated.
     """
 
-    def __init__(self, model, reasoning: type[Reasoning], opinion: float, topic: str):
+    def __init__(self, model, reasoning: type[Reasoning], opinion: float, topic: str, llm_model: str = "groq/llama-3.1-8b-instant"):
         system_prompt = f"""You are an agent in a social simulation debating the topic: '{topic}'.
 Your current opinion score is {opinion:.1f} out of 10 (0=strongly against, 10=strongly for).
 When you interact with neighbors:
@@ -25,6 +25,7 @@ Be concise. Your reasoning should reflect genuine persuasion dynamics."""
         super().__init__(
             model=model,
             reasoning=reasoning,
+            llm_model=llm_model,
             system_prompt=system_prompt,
             vision=1,
             internal_state=["opinion"],
@@ -54,21 +55,26 @@ Your neighbors' opinions:
 Based on these interactions, decide whether to update your opinion score.
 Respond with ONLY a single number between 0.0 and 10.0 representing your new opinion."""
 
-        plan = self.reasoning.plan(obs, step_prompt=step_prompt)
+        import time
+        for attempt in range(3):
+            try:
+                plan = self.reasoning.plan(prompt=step_prompt, obs=obs, selected_tools=[])
+                break
+            except Exception as e:
+                if "429" in str(e) or "quota" in str(e).lower() or "rate" in str(e).lower():
+                    time.sleep(5 * (attempt + 1))
+                else:
+                    raise
+        else:
+            return  # Skip step if all retries exhausted
 
         # Parse the LLM response to extract updated opinion
         try:
-            response_text = ""
-            if hasattr(plan, "llm_plan") and plan.llm_plan:
-                for block in plan.llm_plan:
-                    if hasattr(block, "text"):
-                        response_text += block.text
-            # Extract first float found in response
             import re
-
-            numbers = re.findall(r"\b\d+\.?\d*\b", response_text)
+            response_text = str(plan.llm_plan) if hasattr(plan, "llm_plan") else ""
+            numbers = re.findall(r"\b(\d+(?:\.\d+)?)\b", response_text)
             if numbers:
-                new_opinion = float(numbers[0])
+                new_opinion = float(numbers[-1])  # take last number (final answer)
                 new_opinion = max(0.0, min(10.0, new_opinion))
                 self.opinion = new_opinion
                 self.internal_state = [f"opinion:{self.opinion:.1f}"]

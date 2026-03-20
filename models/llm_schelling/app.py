@@ -1,3 +1,13 @@
+import os
+import sys
+from dotenv import load_dotenv
+load_dotenv()
+os.environ["PYTHONIOENCODING"] = "utf-8"
+if sys.stdout.encoding != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+if sys.stderr.encoding != "utf-8":
+    sys.stderr.reconfigure(encoding="utf-8")
+
 import matplotlib.pyplot as plt
 import numpy as np
 import solara

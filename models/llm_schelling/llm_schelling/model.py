@@ -39,7 +39,7 @@ class LLMSchellingModel(mesa.Model):
         height: int = 10,
         density: float = 0.8,
         minority_fraction: float = 0.4,
-        llm_model: str = "gemini/gemini-2.0-flash",
+        llm_model: str = "groq/llama-3.1-8b-instant",
         rng=None,
     ):
         super().__init__(rng=rng)

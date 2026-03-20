@@ -45,6 +45,22 @@ simulation loop required careful prompt engineering.
 
 ## What I'd do differently
 
-Add a visualization that shows opinion clusters forming in real time on the
-grid. The spatial dimension of opinion spread is hard to see from data
-collectors alone.
+Add agent-to-agent messaging so neighbors can share their actual reasoning
+text, not just their opinion score. This would let the LLM engage with
+specific arguments rather than inferring them from a number alone.
+
+## Visualization
+
+The model ships with a real-time Solara dashboard with three panels:
+
+**Step 0 — Initial random opinions (before any interaction):**
+![Initial State](screenshots/step0_initial.png)
+
+**Step 4 — After LLM-driven persuasion:**
+![Step 4 — Convergence](screenshots/step4_convergence.png)
+
+Key observations from the run above:
+- Agents 2 & 3 both converged to **3.8** by step 4 — emergent clustering with no hardcoded convergence rule
+- Agent 4 started at **9.6**, saw neighbor at **0.5**, and reasoned itself down to **2.0** in one step — genuine LLM persuasion
+- Variance dropped from ~15 → ~7 across 4 steps, visible in the Population Dynamics panel
+- Agent 1 (top, isolated) held at **9.8** throughout — spatial isolation preserves extreme opinions

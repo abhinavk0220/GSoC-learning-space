@@ -1,3 +1,13 @@
+import os
+import sys
+from dotenv import load_dotenv
+load_dotenv()
+os.environ["PYTHONIOENCODING"] = "utf-8"
+if sys.stdout.encoding != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+if sys.stderr.encoding != "utf-8":
+    sys.stderr.reconfigure(encoding="utf-8")
+
 import solara
 from mesa.visualization import SolaraViz, make_plot_component
 
@@ -33,10 +43,10 @@ model_params = {
     },
     "llm_model": {
         "type": "Select",
-        "value": "gemini/gemini-2.0-flash",
+        "value": "groq/llama-3.1-8b-instant",
         "label": "LLM Model",
         "values": [
-            "gemini/gemini-2.0-flash",
+            "groq/llama-3.1-8b-instant",
             "gpt-4o-mini",
             "gpt-4o",
         ],
