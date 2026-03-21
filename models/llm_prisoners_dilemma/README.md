@@ -66,13 +66,25 @@ tested.
 
 ![Initial state](screenshots/step0_initial.png)
 
-**Round 1 — After LLM reasoning:**
+**After 5 rounds of LLM-driven reasoning:**
 
-![Round 1 — 100% defection (Nash equilibrium)](screenshots/step1_all_defect.png)
+![5 rounds — cooperation collapses after exploitation, mutual defection locks in](screenshots/step5_tit_for_tat.png)
 
-Key observation: All 6 agents defect in round 1 — the LLM independently
-reasons to the Nash equilibrium. With no trust history, defection is the
-rational choice. This is what game theory predicts for the one-shot
-Prisoner's Dilemma, and the model produces it without any hardcoded rule.
-In longer runs, shared history enables trust signaling and cooperation
-begins to emerge.
+**What this run demonstrates — emergent game theory from pure LLM reasoning:**
+
+| Round | Cooperation Rate | What happened |
+|-------|-----------------|---------------|
+| 1 | 0.5 | One agent tried cooperation to build trust; the other exploited it |
+| 2 | 0.5 | Cooperating agent gave a second chance; exploiter defected again |
+| 3+ | 0.0 | Exploited agent switched to permanent defection — "I tried twice, got burned twice" |
+| 4–5 | 0.0 | Stable mutual defection — Nash equilibrium lock-in |
+
+This is the core result from Axelrod's *Evolution of Cooperation* (1984)
+— agents that try cooperation, get exploited, and retaliate — reproduced
+here with **zero hardcoded strategy**. No tit-for-tat rule, no punishment
+parameter. The LLM reasoned its way to this behavior by reflecting on its
+interaction history at each step.
+
+The right chart tells the story clearly: total_cooperations (green) flat at
+2 after round 2, total_defections (red) climbing every round — one agent
+permanently defected while the other locked in to match.
