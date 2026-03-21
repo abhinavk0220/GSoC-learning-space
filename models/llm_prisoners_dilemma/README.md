@@ -59,3 +59,20 @@ Dilemma experiments. The goal would be to validate whether LLM agents
 produce cooperation dynamics that are actually closer to human behavior
 than rule-based agents which I suspect they do, but haven't formally
 tested.
+
+## Visualization
+
+**Step 0 — Before any rounds:**
+
+![Initial state](screenshots/step0_initial.png)
+
+**Round 1 — After LLM reasoning:**
+
+![Round 1 — 100% defection (Nash equilibrium)](screenshots/step1_all_defect.png)
+
+Key observation: All 6 agents defect in round 1 — the LLM independently
+reasons to the Nash equilibrium. With no trust history, defection is the
+rational choice. This is what game theory predicts for the one-shot
+Prisoner's Dilemma, and the model produces it without any hardcoded rule.
+In longer runs, shared history enables trust signaling and cooperation
+begins to emerge.
