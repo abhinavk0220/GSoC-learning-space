@@ -60,31 +60,26 @@ produce cooperation dynamics that are actually closer to human behavior
 than rule-based agents which I suspect they do, but haven't formally
 tested.
 
-## Visualization
+## Visualization — Emergent Game Theory Step by Step
 
-**Step 0 — Before any rounds:**
+**Round 1 — First cooperation attempt:**
+![Step 1](screenshots/step1_first_cooperation_attempt.png)
+One agent tries to cooperate (coop_rate = 0.5). Both lines overlap — one cooperation, one defection. The generous agent is immediately exploited.
 
-![Initial state](screenshots/step0_initial.png)
+**Round 2 — Second chance given:**
+![Step 2](screenshots/step2_sustained_cooperation.png)
+The cooperating agent gives the partner a second chance. Cooperation rate holds at 0.5. Total cooperations = 2, total defections = 2. The exploiter defects again.
 
-**After 5 rounds of LLM-driven reasoning:**
+**Round 3 — Retaliation begins:**
+![Step 3](screenshots/step3_retaliation_begins.png)
+The exploited agent has had enough. Cooperation rate drops to 0.0. Total cooperations flatlines at 2 — no more trust extended. Defections climbing.
 
-![5 rounds — cooperation collapses after exploitation, mutual defection locks in](screenshots/step5_tit_for_tat.png)
+**Round 4 — Defection dominates:**
+![Step 4](screenshots/step4_defection_dominates.png)
+Both agents now defect every round. The green line (cooperations) is completely flat. Red line keeps climbing. Mutual punishment is locked in.
 
-**What this run demonstrates — emergent game theory from pure LLM reasoning:**
+**Round 5 — Full arc visible:**
+![Step 5 — full arc](screenshots/step5_full_arc.png)
+The complete story: cooperation peaks at 0.5 in rounds 1–2, then collapses permanently. Total defections = 8, total cooperations = 2 (flat since round 2).
 
-| Round | Cooperation Rate | What happened |
-|-------|-----------------|---------------|
-| 1 | 0.5 | One agent tried cooperation to build trust; the other exploited it |
-| 2 | 0.5 | Cooperating agent gave a second chance; exploiter defected again |
-| 3+ | 0.0 | Exploited agent switched to permanent defection — "I tried twice, got burned twice" |
-| 4–5 | 0.0 | Stable mutual defection — Nash equilibrium lock-in |
-
-This is the core result from Axelrod's *Evolution of Cooperation* (1984)
-— agents that try cooperation, get exploited, and retaliate — reproduced
-here with **zero hardcoded strategy**. No tit-for-tat rule, no punishment
-parameter. The LLM reasoned its way to this behavior by reflecting on its
-interaction history at each step.
-
-The right chart tells the story clearly: total_cooperations (green) flat at
-2 after round 2, total_defections (red) climbing every round — one agent
-permanently defected while the other locked in to match.
+**Why this matters:** This is Axelrod's *Evolution of Cooperation* (1984) reproduced with **zero hardcoded strategy**. No tit-for-tat rule, no punishment threshold, no memory parameter. The LLM agent reasoned: *"I cooperated twice, got exploited twice — I'm switching to permanent defection."* That's genuine strategic reasoning from interaction history, not a rule.
