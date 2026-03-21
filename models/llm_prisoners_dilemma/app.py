@@ -47,10 +47,10 @@ model_params = {
     },
     "llm_model": {
         "type": "Select",
-        "value": "groq/llama-3.1-8b-instant",
+        "value": "cerebras/llama3.1-8b",
         "label": "LLM Model",
         "values": [
-            "groq/llama-3.1-8b-instant",
+            "cerebras/llama3.1-8b",
             "gpt-4o-mini",
             "gpt-4o",
         ],

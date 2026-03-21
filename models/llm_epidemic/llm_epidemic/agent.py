@@ -30,7 +30,7 @@ class EpidemicAgent(LLMAgent):
         is_isolating (bool): Whether the agent is currently isolating.
     """
 
-    def __init__(self, model, health_state: str = "susceptible", llm_model: str = "groq/llama-3.1-8b-instant"):
+    def __init__(self, model, health_state: str = "susceptible", llm_model: str = "cerebras/llama3.1-8b"):
         super().__init__(
             model=model,
             reasoning=CoTReasoning,

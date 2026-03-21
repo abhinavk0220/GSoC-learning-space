@@ -1,5 +1,3 @@
-import time
-
 from mesa import DataCollector, Model
 from mesa_llm.memory.st_memory import ShortTermMemory
 
@@ -33,8 +31,8 @@ class PrisonersDilemmaModel(Model):
 
     def __init__(
         self,
-        num_agents: int = 6,
-        llm_model: str = "groq/llama-3.1-8b-instant",
+        num_agents: int = 2,
+        llm_model: str = "cerebras/llama3.1-8b",
     ) -> None:
         super().__init__()
 
@@ -101,9 +99,7 @@ class PrisonersDilemmaModel(Model):
 
             # Both decide independently via LLM reasoning
             action1 = agent1.decide()
-            time.sleep(2)
             action2 = agent2.decide()
-            time.sleep(2)
 
             # Apply outcomes
             agent1.apply_decision(action1, action2)

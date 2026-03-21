@@ -12,7 +12,7 @@ class OpinionAgent(LLMAgent):
         topic (str): The topic being debated.
     """
 
-    def __init__(self, model, reasoning: type[Reasoning], opinion: float, topic: str, llm_model: str = "groq/llama-3.1-8b-instant"):
+    def __init__(self, model, reasoning: type[Reasoning], opinion: float, topic: str, llm_model: str = "cerebras/llama3.1-8b"):
         system_prompt = f"""You are an agent in a social simulation debating the topic: '{topic}'.
 Your current opinion score is {opinion:.1f} out of 10 (0=strongly against, 10=strongly for).
 When you interact with neighbors:

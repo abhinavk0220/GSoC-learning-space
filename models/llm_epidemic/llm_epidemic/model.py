@@ -37,7 +37,7 @@ class EpidemicModel(Model):
         num_agents: int = 20,
         initial_infected: int = 3,
         grid_size: int = 10,
-        llm_model: str = "groq/llama-3.1-8b-instant",
+        llm_model: str = "cerebras/llama3.1-8b",
     ):
         super().__init__()
 

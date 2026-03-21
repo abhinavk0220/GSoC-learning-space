@@ -16,7 +16,7 @@ class SchellingAgent(LLMAgent):
         is_happy (bool): Whether the agent is satisfied with its location.
     """
 
-    def __init__(self, model, reasoning: type[Reasoning], group: int, llm_model: str = "groq/llama-3.1-8b-instant"):
+    def __init__(self, model, reasoning: type[Reasoning], group: int, llm_model: str = "cerebras/llama3.1-8b"):
         group_label = "Group A" if group == 0 else "Group B"
         other_label = "Group B" if group == 0 else "Group A"
 

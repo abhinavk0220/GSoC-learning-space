@@ -33,7 +33,7 @@ class LLMOpinionDynamicsModel(mesa.Model):
         width: int = 5,
         height: int = 5,
         topic: str = "Should artificial intelligence be regulated by governments?",
-        llm_model: str = "groq/llama-3.1-8b-instant",
+        llm_model: str = "cerebras/llama3.1-8b",
         rng=None,
     ):
         super().__init__(rng=rng)

@@ -45,7 +45,7 @@ class PrisonerAgent(LLMAgent):
         ("defect",    "defect"):    (1, 1),
     }
 
-    def __init__(self, model, llm_model: str = "groq/llama-3.1-8b-instant") -> None:
+    def __init__(self, model, llm_model: str = "cerebras/llama3.1-8b") -> None:
         super().__init__(
             model=model,
             reasoning=CoTReasoning,
@@ -117,7 +117,8 @@ class PrisonerAgent(LLMAgent):
             plan = self.reasoning.plan(prompt=step_prompt, obs=obs, selected_tools=[])
             content = plan.content if hasattr(plan, "content") else str(plan)
             return self._parse_action(content)
-        except Exception:
+        except Exception as e:
+            print(f"[PrisonerAgent {self.unique_id}] LLM ERROR: {type(e).__name__}: {e}")
             return "cooperate"
 
     def apply_decision(self, action: str, partner_action: str) -> None:
