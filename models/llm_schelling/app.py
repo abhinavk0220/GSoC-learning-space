@@ -21,7 +21,7 @@ GROUP_COLORS = {0: "#2196F3", 1: "#FF5722"}  # Blue, Orange
 model_params = {
     "width": {
         "type": "SliderInt",
-        "value": 10,
+        "value": 5,
         "label": "Grid width",
         "min": 5,
         "max": 20,
@@ -29,7 +29,7 @@ model_params = {
     },
     "height": {
         "type": "SliderInt",
-        "value": 10,
+        "value": 5,
         "label": "Grid height",
         "min": 5,
         "max": 20,
@@ -79,8 +79,40 @@ def SchellingGridPlot(model):
     return solara.FigureMatplotlib(fig)
 
 
-HappinessPlot = make_plot_component({"happy": "#4CAF50", "unhappy": "#F44336"})
-SegregationPlot = make_plot_component("segregation_index")
+def SchellingStatsPlot(model):
+    """Combined happiness + segregation index chart."""
+    update_counter.get()
+
+    df = model.datacollector.get_model_vars_dataframe()
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 5), facecolor="#1a1a2e")
+    fig.patch.set_facecolor("#1a1a2e")
+
+    for ax in (ax1, ax2):
+        ax.set_facecolor("#16213e")
+        ax.tick_params(colors="white")
+        ax.xaxis.label.set_color("white")
+        ax.yaxis.label.set_color("white")
+        ax.title.set_color("white")
+        for spine in ax.spines.values():
+            spine.set_edgecolor("#444")
+
+    if not df.empty:
+        ax1.plot(df.index, df["happy"], color="#4CAF50", label="Happy", linewidth=2)
+        ax1.plot(df.index, df["unhappy"], color="#F44336", label="Unhappy", linewidth=2)
+    ax1.set_title("Agent Happiness", fontsize=11)
+    ax1.set_ylabel("Count", color="white")
+    ax1.legend(facecolor="#16213e", labelcolor="white", fontsize=8)
+
+    if not df.empty and "segregation_index" in df.columns:
+        ax2.plot(df.index, df["segregation_index"], color="#2196F3", linewidth=2)
+    ax2.set_title("Segregation Index", fontsize=11)
+    ax2.set_ylabel("Index", color="white")
+    ax2.set_xlabel("Step", color="white")
+
+    fig.tight_layout(pad=1.5)
+    return solara.FigureMatplotlib(fig)
+
 
 model = LLMSchellingModel()
 
@@ -88,8 +120,7 @@ page = SolaraViz(
     model,
     components=[
         SchellingGridPlot,
-        HappinessPlot,
-        SegregationPlot,
+        SchellingStatsPlot,
     ],
     model_params=model_params,
     name="LLM Schelling Segregation",
